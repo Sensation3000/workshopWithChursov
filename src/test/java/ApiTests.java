@@ -1,4 +1,7 @@
+import controllers.UserController;
 import io.restassured.response.Response;
+import models.AddUserResponse;
+import models.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +10,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class ApiTests {
+    UserController userController = new UserController();
 
     @Test
     void createUser() {
@@ -28,7 +32,7 @@ public class ApiTests {
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .body(body).
-                when()
+           when()
                 .post("user")
                 .andReturn();
         response.body().prettyPrint();
@@ -58,10 +62,47 @@ public class ApiTests {
                 .body(body).
            when()
                 .post("user")
-              .then()
+                .then()
                 .statusCode(200)
                 .body("code", equalTo(200))
                 .body("type", equalTo("unknown"))
                 .body("message", notNullValue(String.class));
+    }
+
+    @Test
+    void createUserControllerTest() {
+        // пока тестовые данные в самом тесте - еще не вынесли их отдельно
+        // первый вариант добавления тестовых данных
+        User user = new User(0,
+                "username",
+                "firstName",
+                "lastName",
+                "email",
+                "password",
+                "phone",
+                0);
+
+        //второй вариант через Builder, паттерн автоматизации
+        User userBuilder = User.builder()
+                .username("username")
+                .firstName("firstName")
+                .lastName("lastName")
+                .email("email")
+                .phone("password")
+                .userStatus(0)
+                .build();
+
+        Response response = userController.createUser(user);
+        //вызываем создание пользователя, получаем ответ
+
+        AddUserResponse createdUserResponse = response.as(AddUserResponse.class);
+        //парсинг ответа в виде JSON на джава объект
+        //передаем класс в котором нам нужно сделать сериализацию
+        //после этого уже можем работать с джава объектом
+
+        Assertions.assertEquals(200, response.statusCode());
+        Assertions.assertEquals(200, createdUserResponse.getCode());
+        Assertions.assertEquals("unknown", createdUserResponse.getType());
+        Assertions.assertFalse(createdUserResponse.getMessage().isEmpty());
     }
 }
