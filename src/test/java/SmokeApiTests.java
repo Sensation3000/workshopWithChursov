@@ -29,7 +29,7 @@ public class SmokeApiTests {
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .baseUri("https://petstore.swagger.io/v2/")
-                .when()
+            .when()
                 .body(body)
                 .post("user")
                 .andReturn();

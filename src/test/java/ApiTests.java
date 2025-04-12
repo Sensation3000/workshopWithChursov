@@ -32,7 +32,7 @@ public class ApiTests {
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .body(body).
-                when()
+           when()
                 .post("user")
                 .andReturn();
         response.body().prettyPrint();
@@ -60,7 +60,7 @@ public class ApiTests {
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
                 .body(body).
-                when()
+           when()
                 .post("user")
                 .then()
                 .statusCode(200)
